@@ -1,30 +1,73 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="pt-BR">
 <head>
   <meta charset="UTF-8">
   <title>Gerador de Recibos</title>
   <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 40px;
+      background-color: #f9f9f9;
+    }
+    header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 2px solid #eee;
+      padding-bottom: 10px;
+      margin-bottom: 20px;
+    }
+    h1 {
+      font-size: 28px;
+      color: #333;
+    }
+    img.logo {
+      height: 60px;
+    }
     table {
       width: 100%;
       border-collapse: collapse;
       margin-bottom: 1em;
+      background-color: #fff;
+      box-shadow: 0 0 10px rgba(0,0,0,0.05);
     }
-    th, td {
-      padding: 8px;
+    th {
+      background-color: #003a63;
+      color: #fff;
+      padding: 10px;
+      text-align: left;
+    }
+    td {
+      padding: 10px;
       border: 1px solid #ddd;
     }
     input {
       width: 100%;
-      padding: 4px;
+      padding: 6px;
+      box-sizing: border-box;
+      border-radius: 4px;
+      border: 1px solid #ccc;
     }
     button {
-      padding: 8px 16px;
+      padding: 10px 20px;
       margin-top: 10px;
+      border: none;
+      background-color: #003a63;
+      color: white;
+      cursor: pointer;
+      border-radius: 4px;
+    }
+    button:hover {
+      background-color: #005494;
     }
   </style>
 </head>
 <body>
-  <h1>Gerar Recibos</h1>
+  <header>
+    <h1><strong>Gerador de Recibos</strong></h1>
+    <img class="logo" src="/static/logo.png" alt="Logo JFL">
+  </header>
+
   <form method="POST" action="/gerar">
     <input type="hidden" name="total_linhas" id="total_linhas" value="1">
     <table id="tabela-recibos">
@@ -71,7 +114,7 @@
       tabela.appendChild(nova);
       document.getElementById('total_linhas').value = index + 1;
       index++;
-      aplicarMascara(); // atualiza formatação
+      aplicarMascara();
     }
 
     function aplicarMascara() {
