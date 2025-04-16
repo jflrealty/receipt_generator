@@ -56,7 +56,7 @@ def gerar():
             pdf.cell(0, 10, f"No.: {numero}", ln=False, align='R')
 
             pdf.set_font("Arial", size=11)
-            pdf.ln(50)  # espaço entre logo e texto principal
+            pdf.ln(50)
             pdf.multi_cell(0, 8, txt=(
                 "JFL Administradora Imobiliária Nações Unidas Ltda., registered under Brazil Tax number 49.826.447/0001-03,\n"
                 "located at Rebouças Avenue, 3.084, Floor 4º, Pinheiros, São Paulo - SP, representing the company\n"
@@ -74,7 +74,8 @@ def gerar():
             pdf.ln(15)
             pdf.cell(0, 10, "JFL Administradora Imobiliária Nações Unidas Ltda.", ln=True, align='C')
 
-            path_pdf = os.path.join(tmpdir, f"recibo_{i+1}.pdf")
+            safe_nome = nome.strip().replace(" ", "_").replace("/", "_").replace("\\", "_")
+            path_pdf = os.path.join(tmpdir, f"jfl_invoice_{safe_nome}.pdf")
             pdf.output(path_pdf)
             recibos_paths.append(path_pdf)
 
