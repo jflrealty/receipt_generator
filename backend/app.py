@@ -16,7 +16,7 @@ def valor_por_extenso(valor):
     if centavos > 0:
         texto += f" and {centavos} cents"
     else:
-        texto += " and 00 cents"
+        texto += " and zero cents"
     return texto
 
 @app.route('/')
@@ -42,11 +42,18 @@ def gerar():
 
             pdf = FPDF()
             pdf.add_page()
+
+            # Número do recibo
+            numero = f"REC-{datetime.now().strftime('%Y%m%d')}-{str(i+1).zfill(4)}"
+            pdf.set_font("Arial", "B", 12)
+            pdf.cell(0, 10, f"Receipt No.: {numero}", ln=True, align='C')
+            pdf.ln(5)
+
             pdf.set_auto_page_break(auto=True, margin=15)
 
             logo_path = os.path.join("static", "logo.png")
             if os.path.exists(logo_path):
-                pdf.image(logo_path, x=10, y=8, w=40)
+                pdf.image(logo_path, x=70, y=8, w=70)
 
             pdf.set_font("Arial", size=12)
             pdf.ln(40)
@@ -56,16 +63,16 @@ def gerar():
                 "SPE JFL AVNU EMPREEENDIMENTO IMOBILIARIO S.A., Tax number 35.946.965/0001-56, have received from\n"
                 f"{nome}, the amount of BRL {valor:,.2f} ({valor_por_extenso(valor)}), regarding lease of unit {unidade} at\n"
                 "building Av.NU, located at Nações Unidas Av, 15.187."
-            ))
+            ), align='J')
 
             pdf.ln(10)
-            pdf.cell(0, 10, f"Resident: {nome}", ln=True)
-            pdf.cell(0, 10, f"Lease Period: {datetime.strptime(data_inicio, '%Y-%m-%d').strftime('%B %d, %Y')} to {datetime.strptime(data_fim, '%Y-%m-%d').strftime('%B %d, %Y')}", ln=True)
+            pdf.cell(0, 10, f"Resident: {nome}", ln=True, align='C')
+            pdf.cell(0, 10, f"Lease Period: {datetime.strptime(data_inicio, '%Y-%m-%d').strftime('%B %d, %Y')} to {datetime.strptime(data_fim, '%Y-%m-%d').strftime('%B %d, %Y')}", ln=True, align='C')
             pdf.ln(5)
-            pdf.cell(0, 10, f"São Paulo, {data_emissao_dt.strftime('%B %d, %Y')}", ln=True)
+            pdf.cell(0, 10, f"São Paulo, {data_emissao_dt.strftime('%B %d, %Y')}", ln=True, align='C')
 
             pdf.ln(15)
-            pdf.cell(0, 10, "JFL Administradora Imobiliária Nações Unidas Ltda.", ln=True)
+            pdf.cell(0, 10, "JFL Administradora Imobiliária Nações Unidas Ltda.", ln=True, align='C')
 
             path_pdf = os.path.join(tmpdir, f"recibo_{i+1}.pdf")
             pdf.output(path_pdf)
