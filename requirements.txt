@@ -1,3 +1,4 @@
 Flask==2.3.2
 fpdf==1.7.2
 num2words==0.5.12
+gunicorn==21.2.0
