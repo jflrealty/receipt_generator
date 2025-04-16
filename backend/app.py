@@ -1,4 +1,3 @@
-# app.py
 from flask import Flask, render_template, request, Response
 from datetime import datetime
 from fpdf import FPDF
@@ -10,7 +9,7 @@ app = Flask(__name__)
 def valor_por_extenso(valor):
     inteiro = int(valor)
     centavos = int(round((valor - inteiro) * 100))
-    texto = f"{num2words(inteiro, lang='en') }"
+    texto = f"{num2words(inteiro, lang='en')}"
     if centavos > 0:
         texto += f" and {centavos} cents"
     else:
@@ -25,14 +24,18 @@ def index():
 def gerar():
     recibos = []
     total_linhas = int(request.form['total_linhas'])
+    print(f"🔢 Gerando {total_linhas} recibo(s)")
 
     for i in range(total_linhas):
         nome = request.form.get(f'nome_{i}')
-        valor = float(request.form.get(f'valor_{i}').replace(',', '').replace('R$', '').strip())
+        valor_str = request.form.get(f'valor_{i}')
+        valor = float(valor_str.replace('R$', '').replace('.', '').replace(',', '.').strip())
         unidade = request.form.get(f'unidade_{i}')
         data_inicio = request.form.get(f'data_inicio_{i}')
         data_fim = request.form.get(f'data_fim_{i}')
         data_emissao = request.form.get(f'data_emissao_{i}')
+
+        print(f"🧾 Recibo {i+1}: {nome} - R$ {valor:.2f} - Unidade: {unidade}")
 
         data_emissao_dt = datetime.strptime(data_emissao, '%Y-%m-%d')
 
@@ -41,7 +44,8 @@ def gerar():
         pdf.set_auto_page_break(auto=True, margin=15)
 
         logo_path = os.path.join("static", "logo.png")
-        pdf.image(logo_path, x=10, y=8, w=40)
+        if os.path.exists(logo_path):
+            pdf.image(logo_path, x=10, y=8, w=40)
 
         pdf.set_font("Arial", size=12)
         pdf.ln(40)
@@ -65,7 +69,7 @@ def gerar():
         pdf_bytes = pdf.output(dest='S').encode('latin1')
         recibos.append(pdf_bytes)
 
-    # Retorna só o primeiro por enquanto (lote com zip pode vir depois)
+    print("✅ Recibo(s) gerado(s) com sucesso!")
     return Response(
         recibos[0],
         mimetype='application/pdf',
