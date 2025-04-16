@@ -61,7 +61,7 @@ def gerar():
                 "JFL Administradora Imobiliária Nações Unidas Ltda., registered under Brazil Tax number 49.826.447/0001-03,\n"
                 "located at Rebouças Avenue, 3.084, 4th Floor , Pinheiros, São Paulo - SP, representing company\n"
                 "SPE JFL AVNU EMPREEENDIMENTO IMOBILIARIO S.A., Tax number 35.946.965/0001-56, has received from\n"
-                f"{nome}, the amount of BRL {valor:,.2f} ({valor_por_extenso(valor)} reais), regarding lease unit {unidade} at\n"
+                f"{nome}, the amount of BRL {valor:,.2f} ({valor_por_extenso(valor)}), regarding lease unit {unidade} at\n"
                 "building Av.NU, located at Nações Unidas Av, 15.187."
             ), align='J')
 
