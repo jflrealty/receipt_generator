@@ -43,21 +43,21 @@ def gerar():
             pdf = FPDF()
             pdf.add_page()
 
-            # Número do recibo
-            numero = f"REC-{datetime.now().strftime('%Y%m%d')}-{str(i+1).zfill(4)}"
-            pdf.set_font("Arial", "B", 12)
-            pdf.cell(0, 10, f"Receipt No.: {numero}", ln=True, align='C')
-            pdf.ln(5)
-
             pdf.set_auto_page_break(auto=True, margin=15)
 
             logo_path = os.path.join("static", "logo.png")
             if os.path.exists(logo_path):
                 pdf.image(logo_path, x=70, y=8, w=70)
 
-            pdf.set_font("Arial", size=12)
-            pdf.ln(40)
-            pdf.multi_cell(0, 10, txt=(
+            # Número do recibo no canto superior direito
+            numero = f"REC-{datetime.now().strftime('%Y%m%d')}-{str(i+1).zfill(4)}"
+            pdf.set_xy(150, 10)
+            pdf.set_font("Arial", "", 10)
+            pdf.cell(0, 10, f"No.: {numero}", ln=False, align='R')
+
+            pdf.set_font("Arial", size=11)
+            pdf.ln(50)  # espaço entre logo e texto principal
+            pdf.multi_cell(0, 8, txt=(
                 "JFL Administradora Imobiliária Nações Unidas Ltda., registered under Brazil Tax number 49.826.447/0001-03,\n"
                 "located at Rebouças Avenue, 3.084, Floor 4º, Pinheiros, São Paulo - SP, representing the company\n"
                 "SPE JFL AVNU EMPREEENDIMENTO IMOBILIARIO S.A., Tax number 35.946.965/0001-56, have received from\n"
