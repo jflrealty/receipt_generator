@@ -62,5 +62,5 @@ def gerar():
 
     return send_file(buffer, as_attachment=True, download_name="recibo.pdf", mimetype='application/pdf')
 
-if __name__ == '__main__':
-    app.run(debug=True)
+#if __name__ == '__main__':
+ #app.run(debug=True)
