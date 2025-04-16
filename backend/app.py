@@ -17,7 +17,7 @@ def valor_por_extenso(valor):
         texto += f" and {num2words(centavos, lang='en')} cents"
     else:
         texto += " and zero cents"
-    texto += " reais"
+    texto += " Brazilian reais"
     return texto
 
 @app.route('/')
