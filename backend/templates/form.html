@@ -1,40 +1,93 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
   <meta charset="UTF-8">
   <title>Gerador de Recibos</title>
+  <style>
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-bottom: 1em;
+    }
+    th, td {
+      padding: 8px;
+      border: 1px solid #ddd;
+    }
+    input {
+      width: 100%;
+      padding: 4px;
+    }
+    button {
+      padding: 8px 16px;
+      margin-top: 10px;
+    }
+  </style>
 </head>
 <body>
-  <h1>Gerar Recibo</h1>
+  <h1>Gerar Recibos</h1>
   <form method="POST" action="/gerar">
-    <table>
-      <tr>
-        <td>Nome do Morador:</td>
-        <td><input type="text" name="nome" required></td>
-      </tr>
-      <tr>
-        <td>Valor do Aluguel:</td>
-        <td><input type="number" step="0.01" name="valor" required></td>
-      </tr>
-      <tr>
-        <td>Unidade:</td>
-        <td><input type="text" name="unidade" required></td>
-      </tr>
-      <tr>
-        <td>Data Inicial:</td>
-        <td><input type="date" name="data_inicio" required></td>
-      </tr>
-      <tr>
-        <td>Data Final:</td>
-        <td><input type="date" name="data_fim" required></td>
-      </tr>
-      <tr>
-        <td>Data de Emissão:</td>
-        <td><input type="date" name="data_emissao" required></td>
-      </tr>
+    <input type="hidden" name="total_linhas" id="total_linhas" value="1">
+    <table id="tabela-recibos">
+      <thead>
+        <tr>
+          <th>Nome do Morador</th>
+          <th>Valor do Aluguel</th>
+          <th>Unidade</th>
+          <th>Data Inicial</th>
+          <th>Data Final</th>
+          <th>Data de Emissão</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><input name="nome_0" required></td>
+          <td><input name="valor_0" class="valor" required></td>
+          <td><input name="unidade_0" required></td>
+          <td><input name="data_inicio_0" type="date" required></td>
+          <td><input name="data_fim_0" type="date" required></td>
+          <td><input name="data_emissao_0" type="date" required></td>
+        </tr>
+      </tbody>
     </table>
-    <br>
-    <button type="submit">Gerar Recibo</button>
+    <button type="button" onclick="adicionarLinha()">+ Adicionar Linha</button><br><br>
+    <button type="submit">Gerar Recibos</button>
   </form>
+
+  <script>
+    let index = 1;
+
+    function adicionarLinha() {
+      const tabela = document.querySelector("#tabela-recibos tbody");
+      const nova = document.createElement("tr");
+
+      nova.innerHTML = `
+        <td><input name="nome_${index}" required></td>
+        <td><input name="valor_${index}" class="valor" required></td>
+        <td><input name="unidade_${index}" required></td>
+        <td><input name="data_inicio_${index}" type="date" required></td>
+        <td><input name="data_fim_${index}" type="date" required></td>
+        <td><input name="data_emissao_${index}" type="date" required></td>
+      `;
+      tabela.appendChild(nova);
+      document.getElementById('total_linhas').value = index + 1;
+      index++;
+      aplicarMascara(); // atualiza formatação
+    }
+
+    function aplicarMascara() {
+      const valores = document.querySelectorAll(".valor");
+      valores.forEach(input => {
+        input.addEventListener("input", function () {
+          let v = input.value.replace(/\D/g, '');
+          v = (v / 100).toFixed(2) + '';
+          v = v.replace(".", ",");
+          v = v.replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+          input.value = 'R$ ' + v;
+        });
+      });
+    }
+
+    aplicarMascara();
+  </script>
 </body>
 </html>
