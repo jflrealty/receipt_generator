@@ -12,11 +12,12 @@ app = Flask(__name__)
 def valor_por_extenso(valor):
     inteiro = int(valor)
     centavos = int(round((valor - inteiro) * 100))
-    texto = f"{num2words(inteiro, lang='en')} reais"
+    texto = f"{num2words(inteiro, lang='en')}"
     if centavos > 0:
         texto += f" and {num2words(centavos, lang='en')} cents"
     else:
         texto += " and zero cents"
+    texto += " reais"
     return texto
 
 @app.route('/')
@@ -60,10 +61,11 @@ def gerar():
             pdf.multi_cell(0, 8, txt=(
                 "JFL Administradora Imobiliária Nações Unidas Ltda., registered under Brazil Tax number 49.826.447/0001-03,\n"
                 "located at Rebouças Avenue, 3.084, 4th Floor , Pinheiros, São Paulo - SP, representing company\n"
-                "SPE JFL AVNU EMPREEENDIMENTO IMOBILIARIO S.A., Tax number 35.946.965/0001-56, has received from\n"
-                f"{nome}, the amount of BRL {valor:,.2f} ({valor_por_extenso(valor)}), regarding lease unit {unidade} at\n"
+                "SPE JFL AVNU EMPREEENDIMENTO IMOBILIARIO S.A., Tax number 35.946.965/0001-56, has received\n"
+                f"from\n{nome}, the amount of BRL {valor:,.2f} ({valor_por_extenso(valor)}),\n"
+                f"regarding lease unit {unidade} at\n"
                 "building Av.NU, located at Nações Unidas Av, 15.187."
-            ), align='J')
+            ), align='L')
 
             pdf.ln(10)
             pdf.cell(0, 10, f"Resident: {nome}", ln=True, align='C')
