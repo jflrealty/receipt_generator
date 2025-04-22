@@ -90,7 +90,6 @@
           <th>Data Inicial</th>
           <th>Data Final</th>
           <th>Data de Emissão</th>
-          <th>Assinatura</th>
           <th>Ação</th>
         </tr>
       </thead>
@@ -102,15 +101,7 @@
           <td><input name="data_inicio_0" type="date" required></td>
           <td><input name="data_fim_0" type="date" required></td>
           <td><input name="data_emissao_0" type="date" required></td>
-          <td>
-            <select name="responsavel_0" required>
-              <option value="">Selecione</option>
-              <option value="Marta Cabral">Marta Cabral</option>
-              <option value="Jelifer Neves">Jelifer Neves</option>
-              <option value="Marina Macena">Marina Macena</option>
-            </select>
-          </td>
-          <td></td>
+          <td><button type="button" class="remover" onclick="removerLinha(this)">Remover</button></td>
         </tr>
       </tbody>
     </table>
@@ -132,14 +123,6 @@
         <td><input name="data_inicio_${index}" type="date" required></td>
         <td><input name="data_fim_${index}" type="date" required></td>
         <td><input name="data_emissao_${index}" type="date" required></td>
-        <td>
-          <select name="responsavel_${index}" required>
-            <option value="">Selecione</option>
-            <option value="Marta Cabral">Marta Cabral</option>
-            <option value="Jelifer Neves">Jelifer Neves</option>
-            <option value="Marina Macena">Marina Macena</option>
-          </select>
-        </td>
         <td><button type="button" class="remover" onclick="removerLinha(this)">Remover</button></td>
       `;
       tabela.appendChild(nova);
