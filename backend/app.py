@@ -52,7 +52,7 @@ def gerar():
             pdf.set_font("Arial", "", 10)
             pdf.cell(0, 10, f"Receipt No.: {numero}", ln=False)
 
-            pdf.ln(40)  # mais espaço abaixo da logo
+            pdf.ln(40)
 
             pdf.set_left_margin(20)
             pdf.set_right_margin(20)
@@ -79,12 +79,11 @@ def gerar():
 
             pdf.ln(25)
             pdf.set_font("Arial", size=12)
-            pdf.cell(0, 7, nome, ln=True, align='C')
             pdf.cell(0, 5, "__________________________", ln=True, align='C')
             pdf.set_font("Arial", size=10)
             pdf.cell(0, 10, "JFL Administradora Imobiliária Nações Unidas Ltda.", ln=True, align='C')
 
-            # Salva em memória
+            # Salva PDF no ZIP
             pdf_bytes = pdf.output(dest='S').encode('latin1')
             safe_nome = nome.strip().replace(" ", "_").replace("/", "_").replace("\\", "_")
             safe_unidade = unidade.strip().replace(" ", "_").replace("/", "_").replace("\\", "_")
