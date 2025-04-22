@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, Response
+from flask import Flask, render_template, request, send_file
 from datetime import datetime
 from fpdf import FPDF
 import os
@@ -22,14 +22,13 @@ def index():
 
 @app.route('/gerar', methods=['POST'])
 def gerar():
-    buffer = io.BytesIO()
     total_linhas = int(request.form['total_linhas'])
-
-    pdf = FPDF()
-    pdf.set_auto_page_break(auto=True, margin=15)
+    pdf_files = []
 
     for i in range(total_linhas):
         nome = request.form.get(f'nome_{i}')
+        if not nome:
+            continue
         valor_str = request.form.get(f'valor_{i}', '').replace('R$', '').replace('.', '').replace(',', '.').strip()
         valor = float(valor_str) if valor_str else 0.0
         unidade = request.form.get(f'unidade_{i}')
@@ -38,16 +37,16 @@ def gerar():
         data_emissao = datetime.strptime(request.form.get(f'data_emissao_{i}'), '%Y-%m-%d')
         responsavel = request.form.get(f'responsavel_{i}')
 
+        buffer = io.BytesIO()
+        pdf = FPDF()
         pdf.add_page()
+        pdf.set_auto_page_break(auto=True, margin=15)
 
-        # Logo
         logo_path = os.path.join("static", "logo.png")
         if os.path.exists(logo_path):
             pdf.image(logo_path, x=85, y=10, w=40)
 
         pdf.ln(35)
-
-        # Número do recibo
         numero = f"REC-{datetime.now().strftime('%Y%m%d')}-{str(i+1).zfill(4)}"
         pdf.set_font("Arial", "", 10)
         pdf.cell(0, 10, f"Receipt No.: {numero}", ln=True, align='R')
@@ -79,12 +78,10 @@ def gerar():
         pdf.set_font("Arial", size=11)
         pdf.cell(0, 10, "JFL Administradora Imobiliária Nações Unidas Ltda.", ln=True, align='C')
 
-    pdf.output(buffer)
-    buffer.seek(0)
+        pdf.output(buffer)
+        buffer.seek(0)
 
-    filename = f"jfl_invoice_{request.form.get('nome_0').replace(' ', '_')}.pdf"
-    return Response(
-        buffer,
-        mimetype='application/pdf',
-        headers={"Content-Disposition": f"attachment;filename={filename}"}
-    )
+        safe_nome = nome.strip().replace(" ", "_").replace("/", "_").replace("\\", "_")
+        return send_file(buffer, as_attachment=True, download_name=f"jfl_invoice_{safe_nome}.pdf", mimetype='application/pdf')
+
+    return "Nenhum recibo válido para gerar. Volte e preencha pelo menos um."
