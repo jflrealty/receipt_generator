@@ -47,10 +47,10 @@ def gerar():
             if os.path.exists(logo_path):
                 pdf.image(logo_path, x=85, y=10, w=40)
 
-            pdf.set_xy(160, 10)
+            pdf.set_xy(150, 8)
             numero = f"REC-{datetime.now().strftime('%Y%m%d')}-{str(i+1).zfill(4)}"
-            pdf.set_font("Arial", "", 10)
-            pdf.cell(0, 10, f"Receipt No.: {numero}", ln=False)
+            pdf.set_font("Arial", "", 8)
+            pdf.cell(0, 8, f"Receipt No.: {numero}", ln=False)
 
             pdf.ln(40)
 
