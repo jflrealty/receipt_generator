@@ -1,10 +1,10 @@
-from flask import Flask, render_template, request, Response
+from flask import Flask, render_template, request, send_file
 from datetime import datetime
 from fpdf import FPDF
 import os
 import io
-from num2words import num2words
 import zipfile
+from num2words import num2words
 
 app = Flask(__name__)
 
@@ -46,17 +46,18 @@ def gerar():
         if os.path.exists(logo_path):
             pdf.image(logo_path, x=85, y=10, w=40)
 
-        # Número do recibo no canto superior direito
-        pdf.set_xy(160, 10)
-        pdf.set_font("Arial", "", 9)
-        numero = f"REC-{datetime.now().strftime('%Y%m%d')}-{str(i+1).zfill(4)}"
-        pdf.cell(40, 10, f"{numero}", ln=True, align='R')
+        pdf.ln(45)  # mais espaço da logo
 
-        pdf.ln(40)  # espaço entre logo e texto principal
+        numero = f"REC-{datetime.now().strftime('%Y%m%d')}-{str(i+1).zfill(4)}"
+        pdf.set_font("Arial", "", 10)
+        pdf.cell(0, 10, f"Receipt No.: {numero}", ln=True, align='R')
+
         pdf.set_font("Arial", size=10)
-        pdf.multi_cell(0, 7, txt=(
+        pdf.ln(2)
+
+        pdf.multi_cell(0, 6, txt=(
             f"JFL Administradora Imobiliária Nações Unidas Ltda., registered under Brazil Tax number "
-            f"49.826.447/0001-03, located at Rebouças Avenue, 3.084, 4th Floor, Pinheiros, São Paulo - SP, "
+            f"49.826.447/0001-03, located at Rebouças Avenue, 3.084, 4th Floor , Pinheiros, São Paulo - SP, "
             f"representing company SPE JFL AVNU Empreendimento Imobiliario S.A., Tax number 35.946.965/0001-56, "
             f"has received from {nome}, the amount of BRL {valor:,.2f} ({valor_por_extenso(valor)}), "
             f"regarding lease unit {unidade} at building Av.NU, located at Nações Unidas Av, 15.187."
@@ -71,34 +72,23 @@ def gerar():
         pdf.cell(0, 10, f"São Paulo, {data_emissao.strftime('%B %d, %Y')}", ln=True, align='L')
 
         pdf.ln(25)
-        pdf.set_font("Arial", '', 12)
-        pdf.cell(0, 10, responsavel, ln=True, align='C')  # Nome da assinatura ACIMA da linha
         pdf.set_font("Arial", size=12)
+        pdf.cell(0, 10, responsavel, ln=True, align='C')  # assinatura agora em cima da linha
         pdf.cell(0, 10, "__________________________", ln=True, align='C')
         pdf.set_font("Arial", size=10)
         pdf.cell(0, 10, "JFL Administradora Imobiliária Nações Unidas Ltda.", ln=True, align='C')
 
-        # Gera e armazena o PDF em memória
-        buffer = io.BytesIO()
-        pdf.output(buffer)
-        buffer.seek(0)
-
+        pdf_bytes = pdf.output(dest='S').encode('latin1')
         safe_nome = nome.strip().replace(" ", "_").replace("/", "_").replace("\\", "_")
-        pdf_files.append((f"jfl_invoice_{safe_nome}.pdf", buffer.read()))
+        pdf_buffers.append((f"jfl_invoice_{safe_nome}.pdf", pdf_bytes))
 
-    # Se nenhum válido, retorna aviso
-    if not pdf_files:
+    if not pdf_buffers:
         return "Nenhum recibo válido para gerar. Volte e preencha pelo menos um."
 
-    # Gera zip com todos
     zip_buffer = io.BytesIO()
     with zipfile.ZipFile(zip_buffer, "w") as zipf:
-        for filename, content in pdf_files:
+        for filename, content in pdf_buffers:
             zipf.writestr(filename, content)
     zip_buffer.seek(0)
 
-    return Response(
-        zip_buffer,
-        mimetype='application/zip',
-        headers={"Content-Disposition": "attachment;filename=recibos_jfl.zip"}
-    )
+    return send_file(zip_buffer, mimetype='application/zip', as_attachment=True, download_name='recibos_jfl.zip')
