@@ -48,6 +48,17 @@
       border-radius: 4px;
       border: 1px solid #ccc;
     }
+    .remover {
+      background-color: #e74c3c;
+      color: white;
+      border: none;
+      padding: 5px 10px;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+    .remover:hover {
+      background-color: #c0392b;
+    }
     button {
       padding: 10px 20px;
       margin-top: 10px;
@@ -80,6 +91,7 @@
           <th>Data Final</th>
           <th>Data de Emissão</th>
           <th>Assinatura</th>
+          <th>Ação</th>
         </tr>
       </thead>
       <tbody>
@@ -98,6 +110,7 @@
               <option value="Marina Macena">Marina Macena</option>
             </select>
           </td>
+          <td></td>
         </tr>
       </tbody>
     </table>
@@ -127,11 +140,15 @@
             <option value="Marina Macena">Marina Macena</option>
           </select>
         </td>
+        <td><button type="button" class="remover" onclick="removerLinha(this)">Remover</button></td>
       `;
       tabela.appendChild(nova);
-      document.getElementById('total_linhas').value = index + 1;
-      index++;
+      document.getElementById('total_linhas').value = ++index;
       aplicarMascara();
+    }
+
+    function removerLinha(botao) {
+      botao.closest('tr').remove();
     }
 
     function aplicarMascara() {
