@@ -11,10 +11,10 @@ app = Flask(__name__)
 def valor_por_extenso(valor):
     inteiro = int(valor)
     centavos = int(round((valor - inteiro) * 100))
-    texto = f"{num2words(inteiro, lang='en').replace(',', '')}"
+
+    texto = num2words(inteiro, lang='en').replace(',', '') + " reais"
     if centavos > 0:
-        texto += f" and {num2words(centavos, lang='en')} cents"
-    texto += " of Brazilian reais"
+        texto += " and " + num2words(centavos, lang='en').replace(',', '') + " centavos"
     return texto
 
 @app.route('/')
