@@ -2,3 +2,4 @@ flask
 fpdf2
 num2words
 pillow
+gunicorn
